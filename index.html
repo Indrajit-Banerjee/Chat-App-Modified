@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CHIT CHAT</title>
+    <mata charset="UTF-8">
+    <script src="/socket.io/socket.io.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><!--defer - to run after DOM load-->
+    
+    <style>
+        *{
+    font-family: 'Poppins', 'sans-serif';
+}
+
+.logo{
+    display: block;
+    margin: auto;
+    width: 50px;
+    height: 50px;
+    border-radius: 2px;
+}
+
+body{
+    height: 100vh;
+    /* background-image: linear-gradient(rgb(255, 255, 255), rgb(109, 39, 239)); */
+    background-image: linear-gradient( #ff004f,rgb(109, 39, 239));
+} 
+
+h1{
+    margin-top: 12px;
+    font-size: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+}
+
+.container{
+    max-width: 955px;
+    border: 2px solid black;
+    /* background-color: cadetblue; */
+    background-color: #BFACE0;
+    margin: auto;
+    height: 55vh;
+    padding: 33px;
+    overflow-y: auto;
+    margin-bottom: 23px;
+    border-radius: 13px;
+}
+
+.message{
+    background-color: rgb(84, 140, 190);
+    width: 25%;
+    /* width: 50%; */
+    padding: 10px;
+    margin: 17px 12px;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+.left{
+    float: left;
+    clear: both;
+    /* background-color:#CDF0EA ; */
+    background-color: #3B8FE3;
+    font-weight: 500;
+    /* font-style: oblique; */
+}
+
+.right{
+    float: right;
+    clear: both;
+    /* background-color: #A084CA; */
+    background-color:#13dfdc90 ;
+    
+}
+
+#send-container{
+    display: block;
+    margin: auto;
+    text-align: center;
+    max-width: 1050px;
+    width: 100%;  
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+}
+
+#messageInp{
+    width: 82%;
+    font-size: 17px;
+    border: 2px solid black;
+    border-radius: 6px;
+    height: 34px;
+}
+
+.btn{
+    width: 11%;
+    cursor: pointer;
+    border: 2px solid black;
+    border-radius: 6px;
+    height: 34px;
+    margin:0px 5px;
+    background-color:#13dfdccb ;
+    color:#180a44;
+    font-size:60%;
+    font-weight: bold;
+}
+
+.btn:hover{
+    height: 38px;
+    background-color: #3B8FE3;
+    /* background-color: #CDF0EA ; */
+}
+
+
+    </style>
+</head>
+
+
+<body>
+    <nav>
+        <img class="logo" src="/chat5.png">
+        <h1>Welcome To CHIT CHAT</h1>
+    </nav>
+
+    <div class="container">
+        <!-- <div class="message right">Indra: hii</div>
+        <div class="message left">Harry: yup</div>  -->
+    </div>
+
+    <div class="send">
+        <form action="#" id="send-container">
+            <input type="text" name="messageInp" id="messageInp">
+            <button class="btn" type="submit">Send</button>
+        </form>
+    </div>
+
+</body>
+</html>
+
+
+<script>
+    const socket = io ();
+const form=document.getElementById('send-container');
+const messageInput=document.getElementById('messageInp');
+const messageContainer=document.querySelector(".container");
+var audio=new Audio('ting.mp3');
+const append=(message,position)=>{
+const messageElement=document.createElement('div');
+messageElement.innerText=message;
+messageElement.classList.add('message');
+messageElement.classList.add(position);
+messageContainer.append(messageElement);
+if(position=='left')
+{
+audio.play();
+}
+}
+form.addEventListener('submit', function(e){
+e.preventDefault();
+const message=messageInput.value;
+append(`You: ${message}`,'right')
+socket.emit('send',message);
+messageInput.value='';
+})
+const name=prompt("Enter your name:");
+socket.emit('new-user-joined',name);
+socket.on('user-joined',data=>{
+append(`${data} joined the chat`,'left');
+})
+socket.on('receive',data=>{
+append(`${data.name}:${data.message}`,'left');
+})
+socket.on('left',name =>{
+append(`${name} left the chat`,'left');
+})
+</script>

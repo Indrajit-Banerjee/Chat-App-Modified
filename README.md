@@ -1,2 +1,2 @@
-# Chat-App-Modified
-A real-time chat web-application.
+# Chat-App
+A Real-time Chat Application.
