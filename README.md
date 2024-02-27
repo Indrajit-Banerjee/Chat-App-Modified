@@ -1,2 +1,2 @@
 # Chat-App
-A Real-time Chat Application.
+A Real-time Chat Web-Application.
